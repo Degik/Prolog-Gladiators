@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import IPython.display as display
 
 from pyswip import Prolog
-from class.envClass import createLevel
+from classAE import envClass
     
 def loadLogic():
     prolog = Prolog()
@@ -19,7 +19,7 @@ def loadLogic():
     return prolog
 
 def createGame():
-    desFile = createLevel()
+    desFile = envClass.createLevel()
     env = gym.make("MiniHack-Skill-Custom-v0", observation_keys = ("chars", "pixel_crop", "pixel"), des_file=desFile)
     state = env.reset()
     env.render
@@ -45,16 +45,27 @@ def performAction(nextMove):
     elif nextMove == "move_ovest":
         return 3
     
-    
+
+
 def startSearch(env, game_map, prolog):
     prolog.retractall("agent(_,_)")
     prolog.retractall("apple(_,_)")
-    player = utils.get_player_location(game_map)
-    try:
-        target = utils.get_target_location(game_map)
-    except Exception as e:
-        print("Simbolo @ mancante")
-        return None
+    # Dare la lista dei simboli presenti in gioco, se un simbolo non è presente, si passa al successivo
+    # Lista simboli
+    #Monsters
+    MonstersSymbolList = ["a", "o", "s", "D"]
+    #Objects
+    ObjectSymbolList = ["%", "$"]
+    #Cycle every monster symbol
+    for monsterSymbol in MonstersSymbolList:
+        #Take new player position
+        player = utils.get_player_location(game_map)
+        try:
+            #Take target position
+            target = utils.get_target_location(game_map, monsterSymbol)
+        except Exception as e:
+            print("Simbolo @ mancante")
+            return None
     
     prolog.assertz(f"agent({player[0]},{player[1]})")
     prolog.assertz(f"apple({target[0]},{target[1]})")

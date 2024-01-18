@@ -1,19 +1,18 @@
 import numpy as np
 import math
 
-from typing import Tuple, List
+from typing import Tuple, Union, List
 
 def get_player_location(game_map: np.ndarray, symbol : str = "@") -> Tuple[int, int]:
     x, y = np.where(game_map == ord(symbol))
     return (x[0], y[0])
 
-
-# > gate di uscita
-# % mela
-# ) ascia
-def get_target_location(game_map: np.ndarray, symbol : str = "%") -> Tuple[int, int]:
-    x, y = np.where(game_map == ord(symbol))
-    return (x[0], y[0])
+def get_target_location(game_map: np.ndarray, symbol : str = "%") -> Tuple[bool, Union[Tuple[int, int], None]]:
+    position = np.where(game_map == ord(symbol))
+    if position[0].size > 0:
+        return True, (position[0][0], position[1][0])
+    else:
+        return False, None
 
 def is_wall(position_element: int) -> bool:
     obstacles = "|- "

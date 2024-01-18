@@ -15,9 +15,10 @@ agentAction = actionClass.AgentAction()
 
 #Generate level
 level = envClass.EnvMng()
-level.addMonster()
-level.addObject()
-level.addWeapon()
+#level.addMonster()
+#level.addObject()
+#level.addWeapon()
 level.createGame()
 level.printEnv()
 
+#We can start the agent inside the level generated
