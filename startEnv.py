@@ -27,7 +27,7 @@ def printMap(env, state):
     plt.figure()
     plt.imshow(state["pixel_crop"])
 
-def startSearchWeapong(env, game_map, actionMap:actionClass.AgentAction):
+def startSearchWeapon(env, game_map, actionMap:actionClass.AgentAction):
     player = utils.get_player_location(game_map)
     weapon = utils.get_target_location(game_map, ")")
     path = algo.a_star(game_map, player, weapon)
@@ -37,12 +37,15 @@ def startSearchWeapong(env, game_map, actionMap:actionClass.AgentAction):
         player = utils.get_player_location(game_map) #Take new player pos
         actionMap.setAgentPosition(player[0], player[1])#Update player pos
     #env.step("5") # pick_up action
-    queryResult = list(prolog.query("action(Action)"))
+    queryResult = actionMap.queryAction()
     if queryResult:
-        action = queryResult[0]["Action"]
-        
-        
-    prolog.retractall("wields_weapon(agent, tsurugi)")
+        action = actionMap.performAction(queryResult)
+        print(f"Next action: {action}")
+        pickObject = env.step(action)
+        print(pickObject)
+        actionMap.setWeapon("tsurugi")
+    else:
+        print("There isn't any action to do!")
     
 
 #Prima di cercare un nemico bisogna verificare che sia disponibile un'arma

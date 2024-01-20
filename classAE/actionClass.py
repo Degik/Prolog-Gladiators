@@ -38,7 +38,7 @@ actionIdMap = {
 class AgentAction:
     def __init__(self):
         self.kb = Prolog()
-        self.kb.consult('kb.pl')
+        self.kb.consult('actionLogic.pl')
         
     def setAgentPosition(self, x:int, y:int): # Set agent postion
         self.kb.retractall(f"position(agent,_,{x},{y})")
@@ -51,6 +51,9 @@ class AgentAction:
     
     def setWeapon(self, type:str):
         self.kb.retractall(f"wields_weapong(agent, {type})")
+        
+    def queryAction(self):
+        return list(self.kb.query("action(Action)"))
         
     def performAction(self, actions:list):
         if not isinstance(actions, list):

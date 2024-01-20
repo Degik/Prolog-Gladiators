@@ -9,6 +9,9 @@ import IPython.display as display
 
 from classAE import envClass
 from classAE import actionClass
+##
+#SEED
+seed = 40
 
 #Load Knowledgebase
 agentAction = actionClass.AgentAction()
@@ -17,7 +20,8 @@ agentAction = actionClass.AgentAction()
 level = envClass.EnvMng()
 #level.addMonster()
 #level.addObject()
-#level.addWeapon()
+level.addWeapon()
+level.generateObjects(seed)
 level.createGame()
 level.printEnv()
 
