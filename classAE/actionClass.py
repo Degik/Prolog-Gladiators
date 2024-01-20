@@ -40,6 +40,18 @@ class AgentAction:
         self.kb = Prolog()
         self.kb.consult('kb.pl')
         
+    def setAgentPosition(self, x:int, y:int): # Set agent postion
+        self.kb.retractall(f"position(agent,_,{x},{y})")
+    
+    def setAgentPosition(self, type:str, x:int, y:int): # Set enemy postion and type
+        self.kb.retractall(f"position(enemy,{type},{x},{y})")
+
+    def setHp(self, hp:int): # Set hp
+        self.kb.retractall(f"health({hp})")
+    
+    def setWeapon(self, type:str):
+        self.kb.retractall(f"wields_weapong(agent, {type})")
+        
     def performAction(self, actions:list):
         if not isinstance(actions, list):
             raise ValueError("Actions must be a list of dictionaries")
