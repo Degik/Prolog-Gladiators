@@ -1,5 +1,8 @@
 import gym
 import random
+import matplotlib.pyplot as plt
+
+from IPython import display
 from minihack import LevelGenerator
 
 # CLASS FOR ENVIRONMENT MANAGEMENT
@@ -42,8 +45,9 @@ class EnvMng:
         # Use the list for random choise
         monster_names = list(self.monstersList.keys())
         for i in range(num_monsters):
-            monster, symbol = random.choice(monster_names)
-            print(f"[Adding monster {i+1} Name:{monster}, Symbol:{symbol}]")
+            monster = random.choice(monster_names)
+            symbol = self.monstersList[monster]
+            print(f"Adding monster [{i+1}] --> [Name:{monster}, Symbol:{symbol}]")
             self.addMonster(symbol, monster)
     
     def generateObjects(self, seed=None, num_objects=None):
@@ -52,9 +56,9 @@ class EnvMng:
             num_objects = random.randint(1,3)
         objects_names = list(self.objectsList.keys())
         for i in range(num_objects):
-            objectAndSymbol = random.choice(objects_names)
-            objectName, symbol = objectAndSymbol[0], objectAndSymbol[1]
-            print(f"[Adding object {i+1} Name:{objectName}, Symbol:{symbol}]")
+            objectName = random.choice(objects_names)
+            symbol = self.objectsList[objectName]
+            print(f"Adding object [{i+1}] --> [Name:{objectName}, Symbol:{symbol}]")
             self.addObject(symbol, objectName)
     
             
@@ -73,3 +77,10 @@ class EnvMng:
     # Render environment
     def printEnv(self):
         self.env.render()
+
+    #Print display
+    def printDisplay(self):
+        image = plt.imshow(self.game[25:350, 475:825])
+        display.display(plt.gcf())
+        display.clear_output(wait=True)
+        image.set_data(self.state["pixel"][25:350, 475:825])

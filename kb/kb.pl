@@ -21,7 +21,7 @@
 %   - agent is healthy
 %   - next step is in the direction towards the enemy
 action(attack(Direction)) :- position(agent, _, AgentX, AgentY), position(enemy, Type, EnemyX, EnemyY), wields_weapon(agent, Weapon),
-                             s_beatable(enemy, Weapon), is_close(AgentX, AgentY, EnemyX, EnemyY), healthy, next_step(AgentX, AgentY, EnemyX, EnemyY, EnemyD).
+                             is_beatable(enemy, Weapon), is_close(AgentX, AgentY, EnemyX, EnemyY), healthy, next_step(AgentX, AgentY, EnemyX, EnemyY, EnemyD).
 
 % run away from an enemy, when it is not safe to attack
 % choose the opposite direction wrt the enemy position
