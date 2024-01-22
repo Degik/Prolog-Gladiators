@@ -2,24 +2,25 @@ import gym
 import random
 from minihack import LevelGenerator
 
-#Possible object inside the envirnoment
-##MONSTERS LIST
-objectsList = {
-    "apple": "%",
-    "gold piece": "$"
-}
-
-##MONSTERS LIST
-monstersList = {
-    "giant ant": "a",
-    "goblin": "o",
-    "scorpion": "s",
-    "red dragon": "D"
-}
 # CLASS FOR ENVIRONMENT MANAGEMENT
 class EnvMng:
     def __init__(self, width:int = 20, height:int = 20):
         self.level_generated = LevelGenerator(w = width, h=height)
+
+        #Possible object inside the envirnoment
+        ##MONSTERS LIST
+        self.objectsList = {
+            "apple": "%",
+            "gold piece": "$"
+        }
+
+        ##MONSTERS LIST
+        self.monstersList = {
+            "giant ant": "a",
+            "goblin": "o",
+            "scorpion": "s",
+            "red dragon": "D"
+        }
         
     def addWeapon(self, weapon:str="tsurugi"):
         self.level_generated.add_object(name=weapon, symbol=")")
@@ -51,7 +52,8 @@ class EnvMng:
             num_objects = random.randint(1,3)
         objects_names = list(self.objectsList.keys())
         for i in range(num_objects):
-            objectName, symbol = random.choice(objects_names)
+            objectAndSymbol = random.choice(objects_names)
+            objectName, symbol = objectAndSymbol[0], objectAndSymbol[1]
             print(f"[Adding object {i+1} Name:{objectName}, Symbol:{symbol}]")
             self.addObject(symbol, objectName)
     

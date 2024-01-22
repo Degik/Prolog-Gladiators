@@ -38,7 +38,7 @@ actionIdMap = {
 class AgentAction:
     def __init__(self):
         self.kb = Prolog()
-        self.kb.consult('actionLogic.pl')
+        self.kb.consult('kb/kb.pl')
         
     def setAgentPosition(self, x:int, y:int): # Set agent postion
         self.kb.retractall(f"position(agent,_,{x},{y})")
