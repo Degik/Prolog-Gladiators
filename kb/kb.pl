@@ -54,7 +54,7 @@ action(get_to_weapon(Direction)) :- position(agent, _, AgentX, AgentY), position
 % eat the apple and win the game
 % Requirements:
 %   - agent must have a comestible apple
-% action(eat) :- has(agent, comestible, apple)
+action(eat) :- has(agent, comestible, apple).
 
 % pick up an object
 % Requirements:

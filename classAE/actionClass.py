@@ -48,28 +48,60 @@ class AgentAction:
         }
         
     def setAgentPosition(self, x:int, y:int): # Set agent postion
-        self.kb.retractall(f"position(agent,_,{x},{y})")
+        self.kb.retractall(f"position(agent,_,_,_)") # Remove
+        self.kb.assertz(f"position(agent,_,{x},{y})") # Add
     
-    def setAgentPosition(self, type:str, x:int, y:int): # Set enemy postion and type
-        self.kb.retractall(f"position(enemy,{type},{x},{y})")
+    def setEnemyPosition(self, x:int, y:int, type:str = "orc"): # Set enemy postion and type
+        self.kb.retractall(f"position(enemy,_,_,_)") # Remove
+        self.kb.assertz(f"position(enemy,{type},{x},{y})") # Add
 
-    def setHp(self, hp:int): # Set hp
-        self.kb.retractall(f"health({hp})")
+    def setHp(self, hp:int = 100): # Set hp
+        self.kb.retractall(f"health(_)") # Remove
+        self.kb.assertz(f"health({hp})") # Add
     
-    def setWeapon(self, type:str):
-        self.kb.retractall(f"wields_weapong(agent, {type})")
+    def setWeapon(self, type:str = "_"):
+        self.kb.retractall(f"wields_weapong(agent, _)") # Remove
+        self.kb.assertz(f"wields_weapong(agent, {type})") # Add
+    
+    def setHasObject(self, type:str = "_", name:str = "_"):
+        self.kb.retractall(f"has(agent, _, _)") # Remove
+        self.kb.retractall(f"has(agent, {type}, {name})") # Add
+    
+    def setSteppingOn(self):
+        self.kb.retractall(f"stepping_on(agent, ObjClass, _)") # Remove
+        self.kb.assertz(f"stepping_on(agent, ObjClass, _)") # Add
+    
+    def setUnsafePosition(self):
+        self.kb.retractall(f"unsafe_position(_,_)") # Remove
+        self.kb.assertz(f"unsafe_position(_,_)") # Add
         
     def queryAction(self):
-        return list(self.kb.query("action(Action)"))
+        result = list(self.kb.query("action(Action)"))
+        return result
         
     def performAction(self, actions:list):
         if not isinstance(actions, list):
             raise ValueError("Actions must be a list of dictionaries")
         return self.actionIdMap[actions[0]["Action"]]
 
+    def initActionStatus(self, game_map):
+        # :- dynamic position/4.
+        # :- dynamic wields_weapon/2.
+        # :- dynamic health/1.
+        # :- dynamic has/3.
+        # :- dynamic stepping_on/3.
+        # :- dynamic unsafe_position/2.
+        player = utils.get_player_location(game_map)
+        self.setAgentPosition(player[0], player[1]) #Update player pos
+        self.setWeapon()
+        self.setHp()
+        self.setHasObject()
+        self.setSteppingOn()
+        self.setUnsafePosition()
+
+
+
     def startSearchWeapon(self, env, game, game_map:np.ndarray, displayBool:bool = True):
-        print(f"GAME MAP: {game_map}")
-        print(f"ENV: {env}")
         player = utils.get_player_location(game_map)
         weapon = utils.get_target_location(game_map, ")")
         path = algo.a_star(game_map, player, weapon[1], utils.manhattan_distance)
@@ -85,8 +117,8 @@ class AgentAction:
                 image.set_data(state["pixel"][25:350, 475:825])
             ###
             player = utils.get_player_location(game_map) #Take new player pos
-            #actionMap.setAgentPosition(player[0], player[1])#Update player pos
-            time.sleep(0.5)
+            self.setAgentPosition(player[0], player[1])#Update player pos
+            time.sleep(0.2)
         #env.step("5") # pick_up action
         queryResult = self.queryAction()
         if queryResult:

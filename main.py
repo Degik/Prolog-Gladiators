@@ -28,5 +28,5 @@ env, state, game_map, game = level.createGame()
 level.printEnv()
 #
 #level.printDisplay()
-print(game_map)
-agentAction.startSearchWeapon(env, game_map)
+agentAction.initActionStatus(game_map)
+agentAction.startSearchWeapon(env, game, game_map)
