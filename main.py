@@ -28,5 +28,9 @@ env, state, game_map, game = level.createGame()
 level.printEnv()
 #
 #level.printDisplay()
+
+agent = minihack.Agent()
+
 agentAction.initActionStatus(game_map)
-agentAction.startSearchWeapon(env, game, game_map)
+agentAction.startSearchWeapon(env, game, game_map, False)
+agentAction.startSearchObjects(env, game, game_map, level.objectsList, False)

@@ -13,6 +13,13 @@ def get_target_location(game_map: np.ndarray, symbol : str = "%") -> Tuple[bool,
         return True, (position[0][0], position[1][0])
     else:
         return False, None
+    
+def get_objects_location(game_map: np.ndarray, symbol : str = "%"):
+    positions = np.where(game_map == ord(symbol))
+    if positions:
+        return positions
+    else:
+        return None
 
 def is_wall(position_element: int) -> bool:
     obstacles = "|- "

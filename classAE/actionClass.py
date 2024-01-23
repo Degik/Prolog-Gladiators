@@ -17,34 +17,10 @@ class AgentAction:
             "move_est": 1,
             "move_south": 2,
             "move_ovest": 3,
+            "eat": 29,
+            "pick": 49,
+            "wield": 78,
             "attack": 4,
-            "pick_up": 5,
-            "drop": 6,
-            "use": 7,
-            "talk_to": 8,
-            "open": 9,
-            "close": 10,
-            "unlock": 11,
-            "lock": 12,
-            "read": 13,
-            "write": 14,
-            "enter": 15,
-            "exit": 16,
-            "wait": 17,
-            "say": 18,
-            "think": 19,
-            "pray": 20,
-            "cast": 21,
-            "learn": 22,
-            "practice": 23,
-            "rest": 24,
-            "heal": 25,
-            "identify": 26,
-            "equip": 27,
-            "unequip": 28,
-            "drop_all": 29,
-            "save": 30,
-            "quit": 31,
         }
         
     def setAgentPosition(self, x:int, y:int): # Set agent postion
@@ -110,32 +86,75 @@ class AgentAction:
             image = plt.imshow(game[25:350, 475:825])
         for move in actions_move:
             state,_,_,_ = env.step(move)
+            player = utils.get_player_location(game_map) #Take new player pos
+            self.setAgentPosition(player[0], player[1])#Update player pos
             ## Print display
             if displayBool:
                 display.display(plt.gcf())
                 display.clear_output(wait=True)
                 image.set_data(state["pixel"][25:350, 475:825])
+                time.sleep(0.2)
             ###
-            player = utils.get_player_location(game_map) #Take new player pos
-            self.setAgentPosition(player[0], player[1])#Update player pos
-            time.sleep(0.2)
         #env.step("5") # pick_up action
         queryResult = self.queryAction()
         if queryResult:
             action = self.performAction(queryResult)
             print(f"Next action: {action}")
-            pickObject = env.step(action)
+            state,_,_,_ = env.step(action)
             ## Print display
             if displayBool:
                 display.display(plt.gcf())
                 display.clear_output(wait=True)
                 image.set_data(state["pixel"][25:350, 475:825])
             ###
-            print(pickObject)
             self.setWeapon("tsurugi")
         else:
             print("There isn't any action to do!")
     
+    def startSearchObjects(self, env, game, game_map:np.ndarray, objectsList:list, displayBool:bool = True):
+        objectFound = {name: [] for name in objectsList.keys()}
+        for name, symbol in objectsList.items():
+            positions = utils.get_objects_location(game_map, symbol)
+            if positions:
+                for pos in zip(positions[0], positions[1]):
+                    objectFound[name].append(pos)
+        player = utils.get_player_location(game_map)
+        print(objectFound)
+        for objectType, objectPositions in objectFound.items():
+            for objectPos in objectPositions:
+                path = algo.a_star(game_map, player, objectPos, utils.manhattan_distance)
+                actions_move = utils.actions_from_path(player, path[1:])
+                if displayBool:
+                    image = plt.imshow(game[25:350, 475:825])
+                for move in actions_move:
+                    state,_,_,_ = env.step(move)
+                    player = utils.get_player_location(game_map) # Take new player pos
+                    self.setAgentPosition(player[0], player[1]) # Update player pos
+                    ## Print display
+                    if displayBool:
+                        display.display(plt.gcf())
+                        display.clear_output(wait=True)
+                        image.set_data(state["pixel"][25:350, 475:825])
+                        time.sleep(0.2)
+                    ###
+                #env.step("5") # pick_up action
+                queryResult = self.queryAction()
+                if queryResult:
+                    action = self.performAction(queryResult)
+                    print(f"Next action: {action}")
+                    state,_,_,_ = env.step(action)
+                    ## Print display
+                    if displayBool:
+                        display.display(plt.gcf())
+                        display.clear_output(wait=True)
+                        image.set_data(state["pixel"][25:350, 475:825])
+                    ###
+                    if objectType == "apple":
+                        self.setHasObject("commestible", objectType)
+                    else:
+                        self.setHasObject()
+                else:
+                    print("There isn't any action to do!")
 
     #Prima di cercare un nemico bisogna verificare che sia disponibile un'arma
     def startSearchMonsters(env, game_map, prolog):

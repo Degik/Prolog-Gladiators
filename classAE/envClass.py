@@ -68,7 +68,7 @@ class EnvMng:
     def createGame(self, desFile = None):
         if desFile is None:
             desFile = self.level_generated.get_des()
-        self.env = gym.make("MiniHack-Skill-Custom-v0", observation_keys = ("chars", "pixel_crop", "pixel"), des_file=desFile)
+        self.env = gym.make("MiniHack-Skill-Custom-v0", observation_keys = ("chars", "pixel_crop", "pixel", "inv_strs"), des_file=desFile)
         self.state = self.env.reset()
         self.game_map = self.state["chars"]
         self.game = self.state["pixel"]
@@ -84,3 +84,10 @@ class EnvMng:
         display.display(plt.gcf())
         display.clear_output(wait=True)
         image.set_data(self.state["pixel"][25:350, 475:825])
+
+    #Print Inventory
+    def printInventory(self):
+        image = plt.imshow(self.game[25:350, 475:825])
+        display.display(plt.gcf())
+        display.clear_output(wait=True)
+        image.set_data(self.state["inv_strs"][25:350, 475:825])
