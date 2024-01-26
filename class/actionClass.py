@@ -110,7 +110,7 @@ class AgentAction:
             self.setWeapon("tsurugi")
         else:
             print("There isn't any action to do!")
-    
+    #TO DO: INSERIRE ORDINAMENTO PER ANDARE VERSO LE MELE PIU VICINE
     def startSearchObjects(self, env, game, game_map:np.ndarray, objectsList:list, displayBool:bool = True):
         objectFound = {name: [] for name in objectsList.keys()}
         for name, symbol in objectsList.items():
